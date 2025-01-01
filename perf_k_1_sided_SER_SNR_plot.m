@@ -2,9 +2,9 @@ clc;
 clear all;
 close all;
 
-SNR = 5:0.5:25;
+SNR = 5:1:40;
 N_list = [32 64 128 256 512];
-M = 8;
+M = 4;
 SER_list = zeros(5, length(SNR));
 SER_T_list = zeros(5, length(SNR));
 
@@ -16,24 +16,23 @@ for j = 1:1:5
 end
 
 figure("Name","SER vs SNR plot")
-semilogy(SNR, smooth(SER_list(1,:)), '-o', 'Color', '#D95319'); hold on;
-semilogy(SNR, smooth(SER_T_list(1,:)), ':o', 'Color', '#D95319');
-semilogy(SNR, smooth(SER_list(2,:)), '-^', 'Color', '#A2142F');
-semilogy(SNR, smooth(SER_T_list(2,:)), ':^', 'Color', '#A2142F');
-semilogy(SNR, smooth(SER_list(3,:)), '-v', 'Color', '#0072BD');
-semilogy(SNR, smooth(SER_T_list(3,:)), ':v', 'Color', '#0072BD');
-semilogy(SNR, smooth(SER_list(4,:)), '-*', 'Color', '#7E2F8E');
-semilogy(SNR, smooth(SER_T_list(4,:)), ':*', 'Color', '#7E2F8E');
-semilogy(SNR, smooth(SER_list(5,:)), '-s', 'Color','#77AC30');
-semilogy(SNR, smooth(SER_T_list(5,:)), ':s', 'Color','#77AC30');
+semilogy(SNR, smooth(SER_list(1,:), 11), '-o', 'Color', '#D95319'); hold on;
+semilogy(SNR, smooth(SER_T_list(1,:), 11), ':o', 'Color', '#D95319');
+semilogy(SNR, smooth(SER_list(2,:), 11), '-^', 'Color', '#A2142F');
+semilogy(SNR, smooth(SER_T_list(2,:), 11), ':^', 'Color', '#A2142F');
+semilogy(SNR, smooth(SER_list(3,:), 11), '-v', 'Color', '#0072BD');
+semilogy(SNR, smooth(SER_T_list(3,:), 11), ':v', 'Color', '#0072BD');
+semilogy(SNR, smooth(SER_list(4,:), 11), '-*', 'Color', '#7E2F8E');
+semilogy(SNR, smooth(SER_T_list(4,:), 11), ':*', 'Color', '#7E2F8E');
+semilogy(SNR, smooth(SER_list(5,:), 11), '-s', 'Color','#77AC30');
+semilogy(SNR, smooth(SER_T_list(5,:), 11), ':s', 'Color','#77AC30');
 hold off;
 grid on
 legend("$N = 32$ (Opt.)", "$N = 32$ (Trad.)", "$N = 64$ (Opt.)", "$N = 64$ (Trad.)", "$N = 128$ (Opt.)", "$N = 128$ (Trad.)", "$N = 256$ (Opt.)", "$N = 256$ (Trad.)", "$N = 512$ (Opt.)", "$N = 512$ (Trad.)", "Location","southwest", "Interpreter", "Latex");
-xlim([5 20]);
+xlim([5 40]);
 ylim([5e-5 5e-1]);
 xlabel("SNR (dB)");
 ylabel("SER");
-title("One-Sided 4-Level ASK", "FontWeight","normal");
 %title("Plot of SER vs SER when the channel is perfectly known for 8 ASK")
 
 function [SER, SER_T] = runSystem(SNR, N, M)
@@ -42,7 +41,7 @@ function [SER, SER_T] = runSystem(SNR, N, M)
 mu_1 = 0.1;
 mu_2 = 0.2;
 sigma_h = 0.6;
-num_symbols_tx = 10^7;
+num_symbols_tx = 10^5;
 
 K_1 = (mu_1^2)/(sigma_h^2);
 K_2 = (mu_2^2)/(sigma_h^2);
@@ -50,7 +49,9 @@ K_2 = (mu_2^2)/(sigma_h^2);
 alpha = (N * pi/4) * (laguerreL(1/2, -K_1)) * (laguerreL(1/2, -K_2));
 beta = N * ((1 + K_1) * (1 + K_2) - ((pi^2)/16) * ((laguerreL(1/2, -K_1))^2) * ((laguerreL(1/2, -K_2))^2));
 
-sigma = sqrt((2*beta + alpha^2)*(sigma_h^4)/(10^(SNR/10)));
+const_amp = (2/3)*(M-1)*(2*M-1);
+
+sigma = sqrt((2*beta + alpha^2)*(sigma_h^4)*const_amp/(10^(SNR/10)));
 
 mu_f = alpha * (sigma_h^2);
 sigma_f = sqrt(beta * (sigma_h^4));
@@ -61,7 +62,7 @@ n = sigma*randn(num_symbols_tx,1);
 E_h_T_sq = (sigma_h^4)*((alpha^2) + beta);
 
 % TRANSMITTER SIDE
-const_amp = (2/3)*(M-1)*(2*M-1);
+
 P_i = ([0:2:2*(M-1)].^2)./const_amp;
 
 % RECEIVER SIDE

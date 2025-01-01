@@ -2,7 +2,7 @@ clc;
 clear all;
 close all;
 
-SNR = [5 20];
+SNR = [10 40];
 N_list = [128 512];
 M = [4 8];
 cnt = 1;
@@ -36,7 +36,9 @@ K_1 = (mu_1^2)/(sigma_h^2);
 K_2 = (mu_2^2)/(sigma_h^2);
 alpha = (N * pi/4) * (laguerreL(1/2, -K_1)) * (laguerreL(1/2, -K_2));
 beta = N * ((1 + K_1) * (1 + K_2) - ((pi^2)/16) * ((laguerreL(1/2, -K_1))^2) * ((laguerreL(1/2, -K_2))^2));
-sigma = sqrt((2*beta + alpha^2)*(sigma_h^4)/(10^(SNR/10)));
+
+const_amp = (2/3)*(M-1)*(2*M-1);
+sigma = sqrt((2*beta + alpha^2)*(sigma_h^4)*const_amp/(10^(SNR/10)));
 mu_f = alpha * (sigma_h^2);
 sigma_f = sqrt(beta * (sigma_h^4));
 
@@ -46,7 +48,7 @@ n = sigma*randn(num_symbols_tx,1);
 E_h_T_sq = (sigma_h^4)*((alpha^2) + beta);
 
 % OPTIMISATION OF POWER CODEBOOK
-const_amp = (2/3)*(M-1)*(2*M-1);
+
 [t_f, P_f, D_f, S_t] = Bisection(M, N, h_T/sqrt(E_h_T_sq), sigma/sqrt(E_h_T_sq));
 P_f = P_f .* const_amp;
 D_f = D_f .* const_amp;
