@@ -52,7 +52,7 @@ alpha = (N * pi/2) * (laguerreL(1/2, -K_1)) * (laguerreL(1/2, -K_2));
 beta = N * ((1 + K_1) * (1 + K_2) - ((pi^2)/4) * ((laguerreL(1/2, -K_1))^2) * ((laguerreL(1/2, -K_2))^2));
 
 const_amp = (1/3)*(2*M+1)*(2*M+2);
-sigma = sqrt((2*beta + alpha^2)*(sigma_h^4)*const_amp/(10^(SNR/10)));
+sigma = sqrt(2*(beta + alpha^2)*(sigma_h^4)*const_amp/(10^(SNR/10)));
 
 mu_f = alpha * (sigma_h^2);
 sigma_f = sqrt(beta * (sigma_h^4));
