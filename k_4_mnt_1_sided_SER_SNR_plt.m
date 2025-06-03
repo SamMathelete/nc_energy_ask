@@ -38,9 +38,9 @@ ylabel("SER");
 function [SER, SER_T] = runSystem(SNR, N, M)
 
 % SYSTEM PARAMETERS
-mu_1 = 0.1;
-mu_2 = 0.2;
-sigma_h = 0.6;
+mu_1 = 0.8 + 0.5j;
+mu_2 = 0.3 + 0.4j;
+sigma_h = 1;
 num_symbols_tx = 10^5;
 K_1 = (abs(mu_1)^2)/(sigma_h^2);
 K_2 = (abs(mu_2)^2)/(sigma_h^2);
