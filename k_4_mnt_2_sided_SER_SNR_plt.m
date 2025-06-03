@@ -47,8 +47,8 @@ num_symbols_tx = 10^5;
 K_1 = (mu_1^2)/(sigma_h^2);
 K_2 = (mu_2^2)/(sigma_h^2);
 
-alpha = (N * pi/2) * (laguerreL(1/2, -K_1)) * (laguerreL(1/2, -K_2));
-beta = N * ((1 + K_1) * (1 + K_2) - ((pi^2)/4) * ((laguerreL(1/2, -K_1))^2) * ((laguerreL(1/2, -K_2))^2));
+alpha = (N * pi/4) * (laguerreL(1/2, -K_1)) * (laguerreL(1/2, -K_2));
+beta = N * ((1 + K_1) * (1 + K_2) - ((pi^2)/16) * ((laguerreL(1/2, -K_1))^2) * ((laguerreL(1/2, -K_2))^2));
 
 const_amp = (1/3)*(2*M+1)*(2*M+2);
 
